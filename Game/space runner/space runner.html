@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Game</title>
+	<meta charset='utf-8'>
+	<style>
+		html,
+		body {
+			background-size: cover;
+			background-image: url(img/1.jpg);
+			overflow: hidden;
+		}
+
+		.front {
+			margin-left: 35%;
+		}
+
+		.press {
+			position: absolute;
+			right: 20px;
+			top: 20px;
+			cursor: pointer;
+			z-index: 10;
+			color: gold;
+			background-color: black;
+		}
+
+		.press:hover {
+			background-color: green;
+		}
+
+		.press2 {
+			height: 75px;
+			position: absolute;
+			right: 20px;
+			top: 100px;
+			cursor: pointer;
+			z-index: 10;
+		}
+
+		.menu {
+			height: 50vh;
+			width: 200px;
+			position: absolute;
+			top: 0;
+			right: -200px;
+			background-color: black;
+			transition: .5s;
+			opacity: 0.8;
+
+		}
+
+		.openWin {
+			transform: translateX(-200px);
+		}
+
+		.txt_href {
+			color: gold;
+			font-size: 20px;
+			margin-top: 40%;
+			margin-left: 2%;
+			border: 2px solid red;
+			border-radius: 20px;
+		}
+
+		.size {
+			position: absolute;
+			bottom: 5%;
+			right: 45%;
+		}
+
+		.font {
+			color: gold;
+			background-color: black;
+
+		}
+	</style>
+</head>
+
+<body>
+	<div class='conteiner'>
+		<button class='press' src='3.jpg'>Меню</button>
+
+		<div class='js-menu menu'>
+			<span><a href="../Setup/Setup.html">
+					<h3 class="txt_href">Назад в меню</h3>
+				</a></span>
+		</div>
+	</div>
+
+
+	<div class='size'>
+		<strong class='font' id="money"> Ваши деньги: 0 <br /> </strong>
+		<strong class='font' id="level"> Ваш уровень: 0 <br /></strong>
+		<strong class='font' id="work" onclick="Working()"></strong>
+		<button class='font' id="levelup" onclick="LevelUp()"> Купить lvl: 50$</button>
+	</div>
+
+
+	<div class="front"><canvas id="conteiner" width="388" height="615"></canvas> </div>
+
+
+	<script src='game.js'></script>
+</body>
+
+</html>

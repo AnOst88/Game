@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset='utf-8'>
+	<title>Dead covid</title>
+
+
+	<style>
+		body {
+			background-image: url('body_fon.jpg');
+			background-size: cover;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		#wrapper {
+			width: 600px;
+			margin: 0 auto;
+		}
+
+		.press {
+			position: absolute;
+			right: 20px;
+			top: 20px;
+			cursor: pointer;
+			z-index: 10;
+			color: gold;
+			background-color: black;
+		}
+
+		.press:hover {
+
+			background-color: green;
+		}
+
+		.press2 {
+			height: 75px;
+			position: absolute;
+			right: 20px;
+			top: 100px;
+			cursor: pointer;
+			z-index: 10;
+		}
+
+		.menu {
+			height: 50vh;
+			width: 200px;
+			position: absolute;
+			top: 0;
+			right: -200px;
+			background-color: black;
+			transition: .5s;
+			opacity: 0.8;
+
+		}
+
+		.openWin {
+			transform: translateX(-200px);
+		}
+
+		.txt_href {
+			color: gold;
+			font-size: 20px;
+			margin-top: 40%;
+			margin-left: 2%;
+			border: 2px solid red;
+			border-radius: 20px;
+		}
+
+		.size {
+			position: absolute;
+			bottom: 85%;
+			right: 75%;
+		}
+
+		.font {
+			color: gold;
+			background-color: black;
+
+		}
+
+
+		canvas {
+			cursor: none;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<div class='conteiner'>
+		<button class='press' src='3.jpg'>Меню</button>
+
+		<div class='js-menu menu'>
+			<span><a href="../Setup/Setup.html">
+					<h3 class="txt_href">Назад в меню</h3>
+				</a></span>
+		</div>
+	</div>
+
+
+
+	<div class='size'>
+		<strong class='font' id="money"> Ваши деньги: 0 <br /> </strong>
+		<strong class='font' id="level"> Ваш уровень: 0 <br /></strong>
+		<strong class='font' id="work" onclick="Working()"></strong>
+		<button class='font' id="levelup" onclick="LevelUp()"> Купить lvl: 50$</button>
+
+	</div>
+
+	<div id="wrapper">
+		<canvas id="game" width="600" height="600">Элемент не поддерживается</canvas>
+	</div>
+
+
+
+	<script>
+
+		let canvas = document.getElementById('game');
+		let context = canvas.getContext('2d');
+		let vir = [];
+		let fire = [];
+		let expl = [];
+		let timer = 0;
+		let ship = { x: 300, y: 300 }
+
+		canvas.addEventListener('mousemove', function (event) {
+			ship.x = event.offsetX - 25;
+			ship.y = event.offsetY - 13;
+
+
+		})
+
+		let explimg = new Image();
+		explimg.src = "ani.png";
+
+		let fonimg = new Image();
+		fonimg.src = 'fon.svg';
+
+		let fireimg = new Image();
+		fireimg.src = "fire.png";
+
+		let virusimg = new Image();
+		virusimg.src = 'virus.png';
+
+		let shipimg = new Image();
+		shipimg.src = "ship.png";
+
+
+
+		vir.push({ x: 300, y: 0, dx: 1, dy: 2 })// добавляет в массив let vir = [];
+
+
+		explimg.onload = function () {
+			game()
+
+		}
+
+		/////////
+
+		function render() {
+			context.drawImage(fonimg, 0, 0, 600, 600);
+			context.drawImage(shipimg, ship.x, ship.y, 50, 50);
+
+			for (i in vir) context.drawImage(virusimg, vir[i].x, vir[i].y, 50, 50);
+
+			for (i in fire) context.drawImage(fireimg, fire[i].x, fire[i].y, 30, 30);
+
+
+
+			//Взрыв
+			for (i in expl)
+				context.drawImage(explimg, 128 * Math.floor(expl[i].animx), 128 * Math.floor(expl[i].animy), 128, 128, expl[i].x, expl[i].y, 30, 30);
+		}
+
+
+
+		/////////
+		addEventListener('click', function () {
+
+			if (timer % 1 == 0) {
+				fire.push({ x: ship.x + 10, y: ship.y, dx: 0, dy: -5.2 });
+				//fire.push({x:ship.x+10,y:ship.y,dx:0.5,dy:-5}); // в магазин
+				//fire.push({x:ship.x+10,y:ship.y,dx:-0.5,dy:-5}); // установить в магазин
+				update()
+				Working()
+				if (level >= 3) {
+					fire.push({ x: ship.x + 10, y: ship.y, dx: 0.5, dy: -5 });
+				}
+				if (level >= 5) {
+					fire.push({ x: ship.x + 10, y: ship.y, dx: -0.5, dy: -5 });
+				}
+			}
+
+		})
+
+
+		function update() {
+			//таймер запуска
+			timer++;
+			if (timer % 15 == 0) {
+				vir.push({
+					x: Math.random() * 600,
+					y: -50,
+					dx: Math.random() * 2 - 1,
+					dy: Math.random() * 2 + 2,
+					del: 0
+				});
+			}
+
+
+			//выстрел корабля
+
+			for (i in fire) {
+				fire[i].x = fire[i].x + fire[i].dx;
+				fire[i].y = fire[i].y + fire[i].dy;
+
+				if (fire[i].y < -30) fire.splice(i, 1)
+			}
+
+			//взрыв короновируса
+
+			for (i in expl) {
+				expl[i].animx = expl[i].animx + 1;
+				if (expl[i].animx > 7) { expl[i].animy++; expl[i].animx = 0 }
+				if (expl[i].animy > 7)
+					expl.splice(i, 1)
+			}
+
+			// движение вирус
+			for (i in vir) {
+				vir[i].x = vir[i].x + vir[i].dx;
+				vir[i].y = vir[i].y + vir[i].dy;
+
+
+
+
+				// границы экрана
+
+				if (vir[i].x >= 550 || vir[i].x < 0) vir[i].dx = -vir[i].dx;
+				if (vir[i].y >= 600) vir.splice(i, 1);
+
+				//Проверка столкновений пуль с короновирусом
+				for (j in fire) {
+
+					if (Math.abs(vir[i].x + 25 - fire[j].x - 15) < 50 && Math.abs(vir[i].y - fire[j].y) < 25) {
+
+
+
+						expl.push({ x: vir[i].x - 25, y: vir[i].y - 25, animx: 0, animy: 0 });
+
+						vir[i].del = 1;
+						fire.splice(j, 1); break;
+					}
+				}
+				if (vir[i].del == 1) vir.splice(i, 1)
+			}
+		}
+
+		//////////
+
+		function game() {
+			update();
+			render();
+			requestAnimationFrame(game)
+		}
+
+
+		// для всех браузеров
+
+		let requestAnimFrame = (function () {
+			return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestanimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function (callback) {
+					window.setTimeout(callback, 1000 / 20)
+				}
+		})()
+
+
+
+		//Instruction menu-
+
+		let rada = document.querySelector(".press")
+		var verhovna = document.querySelector(".js-menu")
+
+		rada.addEventListener("click", kiev)
+
+		function kiev() {
+			verhovna.classList.toggle("openWin")
+		}
+
+		let OpenOrLock = 0;
+		let moneySecond = 0;
+		let moneys = 1;
+		let plusMoneys = 1;
+		let level = 0;
+		let levelup_cena = 50;
+
+		
+
+
+let save = []
+
+		function Working() {
+			moneys = moneys + plusMoneys;
+			document.getElementById('money').innerHTML = ('Ваши деньги:' + ' ' + moneys + '<br/>');
+			localStorage.setItem('moneys',(save))
+
+		}
+
+
+
+
+		function LevelUp() {
+			if (moneys >= levelup_cena--) {
+				moneys = moneys - levelup_cena;
+				levelup = levelup + 1;
+				levelup_cena + 1;
+				plusMoneys++;
+				levelup_cena = levelup_cena * 2;
+				level++;
+				document.getElementById('money').innerHTML = ('Ваши деньги:' + ' ' + moneys + '<br/>');
+				document.getElementById('level').innerHTML = ('Ваш уровень:' + ' ' + level + '<br/>');
+				document.getElementById('levelup').innerHTML = ('<strong>' + 'Купить lvl:' + ' ' + levelup_cena + '$' + '</strong>');
+				localStorage.setItem('moneys', (save))
+				
+			}
+		}
+
+		function Money_Second() {
+			moneys = moneys + moneySecond;
+			document.getElementById('money').innerHTML = ('Ваши деньги:' + ' ' + moneys + '<br/>');
+
+		}
+		function moneySecondUp() {
+			moneySecond = 1;
+			let interval = setInterval("Money_Second()", 1000);
+		}
+
+
+	</script>
+
+
+
+</body>
+
+</html>
